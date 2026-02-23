@@ -1,11 +1,11 @@
 # CoffeeFlow POS - Application web complète de gestion de caisse café
 
-Application front-end (HTML/CSS/JS) pensée pour une caisse de café avec fonctionnalités avancées.
+Application front-end (HTML/CSS/JS) pensée pour une caisse de café avec fonctionnalités avancées et une interface professionnelle orientée usage comptoir/serveur.
 
 ## Fonctionnalités incluses
 
-- **Multi-serveurs**: gestion d'une liste de serveurs et attribution de chaque ticket.
-- **Vente rapide**: ajout de produits au ticket, modification des quantités, validation d'une vente.
+- **Multi-serveurs**: gestion d'une liste de serveurs, sélection rapide par pastilles et attribution de chaque ticket.
+- **Vente rapide**: ajout de produits au ticket, modification des quantités, validation d'une vente avec ergonomie simplifiée.
 - **Stock**: suivi du stock par produit, alerte de stock bas, blocage en rupture.
 - **Gestion produits**: création, édition et suppression de produits (nom, catégorie, prix, stock, seuil).
 - **Paramètres**:
@@ -32,5 +32,5 @@ Puis ouvrir : `http://localhost:8000`
 ## Fichiers
 
 - `index.html` : structure de l'interface.
-- `styles.css` : thème sombre moderne + responsive.
+- `styles.css` : thème professionnel clair, lisible et responsive.
 - `app.js` : logique complète de caisse / stock / paramètres / impression / rapports.

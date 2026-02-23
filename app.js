@@ -7,6 +7,7 @@ const app = {
   productSearch: document.getElementById("productSearch"),
   catalog: document.getElementById("catalog"),
   serverSelect: document.getElementById("serverSelect"),
+  serverQuickList: document.getElementById("serverQuickList"),
   tableInput: document.getElementById("tableInput"),
   cartList: document.getElementById("cartList"),
   subtotal: document.getElementById("subtotal"),
@@ -117,12 +118,33 @@ function renderHeader() {
 }
 
 function renderServers() {
+  const selectedServer = app.serverSelect.value || state.settings.servers[0] || "";
   app.serverSelect.innerHTML = "";
+  app.serverQuickList.innerHTML = "";
+
   state.settings.servers.forEach((server) => {
     const option = document.createElement("option");
     option.value = server;
     option.textContent = server;
     app.serverSelect.append(option);
+
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "server-chip";
+    chip.textContent = server;
+    chip.addEventListener("click", () => {
+      app.serverSelect.value = server;
+      renderServers();
+    });
+    app.serverQuickList.append(chip);
+  });
+
+  if (state.settings.servers.includes(selectedServer)) {
+    app.serverSelect.value = selectedServer;
+  }
+
+  [...app.serverQuickList.querySelectorAll(".server-chip")].forEach((chip) => {
+    chip.classList.toggle("active", chip.textContent === app.serverSelect.value);
   });
 }
 
@@ -453,6 +475,7 @@ function renderAll() {
 
 app.tabs.forEach((tab) => tab.addEventListener("click", () => setTab(tab.dataset.tab)));
 app.productSearch.addEventListener("input", renderCatalog);
+app.serverSelect.addEventListener("change", renderServers);
 app.clearCartBtn.addEventListener("click", () => {
   state.currentCart = [];
   renderCart();
