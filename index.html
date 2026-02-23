@@ -3,79 +3,164 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Café Caisse - Gestion</title>
+  <title>CoffeeFlow POS - Gestion complète</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="topbar">
     <div>
-      <h1>☕ Gestion Caisse Café</h1>
-      <p>Application simple pour ventes, tickets et suivi journalier.</p>
+      <p class="eyebrow">CoffeeFlow POS</p>
+      <h1>Gestion de caisse café</h1>
+      <p class="subtitle">Multi-serveurs, stock, paramètres d'impression et clôture de journée.</p>
     </div>
-    <button id="resetDayBtn" class="danger">Réinitialiser la journée</button>
+    <div class="topbar-actions">
+      <span id="businessLabel" class="pill"></span>
+      <button id="printLastTicketBtn" class="secondary">Imprimer dernier ticket</button>
+      <button id="closeDayBtn" class="danger">Fin de journée</button>
+    </div>
   </header>
 
-  <main class="layout">
-    <section class="panel">
-      <h2>Produits</h2>
-      <form id="productForm" class="form-grid">
-        <input id="productName" type="text" placeholder="Nom du produit" required />
-        <input id="productPrice" type="number" min="0" step="0.01" placeholder="Prix (€)" required />
-        <button type="submit">Ajouter produit</button>
-      </form>
-      <ul id="productList" class="list"></ul>
+  <nav class="tabs" id="tabs">
+    <button data-tab="vente" class="tab active">Vente</button>
+    <button data-tab="produits" class="tab">Produits & Stock</button>
+    <button data-tab="parametres" class="tab">Paramètres</button>
+    <button data-tab="rapport" class="tab">Rapports</button>
+  </nav>
+
+  <main>
+    <section class="tab-panel active" data-panel="vente">
+      <div class="grid two-col">
+        <article class="card">
+          <div class="card-title-row">
+            <h2>Produits disponibles</h2>
+            <input id="productSearch" type="search" placeholder="Rechercher un produit..." />
+          </div>
+          <div id="catalog" class="product-grid"></div>
+        </article>
+
+        <article class="card sticky-cart">
+          <h2>Ticket en cours</h2>
+          <div class="inline-fields">
+            <label>Serveur
+              <select id="serverSelect"></select>
+            </label>
+            <label>Table / Commande
+              <input id="tableInput" type="text" placeholder="Ex: Terrasse-4" />
+            </label>
+          </div>
+
+          <ul id="cartList" class="list"></ul>
+
+          <div class="totals">
+            <p><span>Sous-total</span><strong id="subtotal">0,00 €</strong></p>
+            <p><span>TVA (<span id="taxRateLabel">10%</span>)</span><strong id="taxAmount">0,00 €</strong></p>
+            <p class="grand"><span>Total</span><strong id="total">0,00 €</strong></p>
+          </div>
+
+          <div class="cart-actions">
+            <button id="clearCartBtn" class="secondary">Vider ticket</button>
+            <button id="checkoutBtn" class="primary">Valider & imprimer</button>
+          </div>
+        </article>
+      </div>
     </section>
 
-    <section class="panel">
-      <h2>Commande en cours</h2>
-      <p class="hint">Cliquez sur <strong>Ajouter au ticket</strong> pour vendre un article.</p>
-      <ul id="cartList" class="list"></ul>
-      <div class="total-row">
-        <span>Total ticket :</span>
-        <strong id="cartTotal">0.00 €</strong>
+    <section class="tab-panel" data-panel="produits">
+      <div class="grid two-col">
+        <article class="card">
+          <h2>Ajouter / Modifier produit</h2>
+          <form id="productForm" class="form-grid">
+            <label>Nom
+              <input id="productName" required type="text" placeholder="Expresso" />
+            </label>
+            <label>Catégorie
+              <input id="productCategory" required type="text" placeholder="Boissons chaudes" />
+            </label>
+            <label>Prix (€)
+              <input id="productPrice" required min="0" step="0.01" type="number" />
+            </label>
+            <label>Stock
+              <input id="productStock" required min="0" step="1" type="number" />
+            </label>
+            <label>Seuil alerte
+              <input id="productThreshold" required min="0" step="1" type="number" />
+            </label>
+            <button id="saveProductBtn" type="submit" class="primary">Enregistrer</button>
+            <button id="cancelEditBtn" type="button" class="secondary hidden">Annuler modification</button>
+          </form>
+        </article>
+
+        <article class="card">
+          <h2>Catalogue / Stock</h2>
+          <ul id="inventoryList" class="list inventory"></ul>
+        </article>
       </div>
-      <button id="checkoutBtn" class="primary">Valider la vente</button>
     </section>
 
-    <section class="panel">
-      <h2>Résumé du jour</h2>
-      <div class="stats">
-        <div class="stat-box">
-          <span>Ventes</span>
-          <strong id="salesCount">0</strong>
-        </div>
-        <div class="stat-box">
-          <span>Chiffre d'affaires</span>
-          <strong id="dailyRevenue">0.00 €</strong>
-        </div>
+    <section class="tab-panel" data-panel="parametres">
+      <article class="card max-720">
+        <h2>Paramètres caisse & impression</h2>
+        <form id="settingsForm" class="form-grid two">
+          <label>Nom établissement
+            <input id="businessName" required type="text" />
+          </label>
+          <label>Devise
+            <input id="currency" required type="text" maxlength="3" />
+          </label>
+          <label>Taux TVA (%)
+            <input id="taxRate" required type="number" min="0" step="0.1" />
+          </label>
+          <label>Ticket: message bas
+            <input id="ticketFooter" required type="text" />
+          </label>
+          <label>Imprimante (nom)
+            <input id="printerName" required type="text" />
+          </label>
+          <label>Auto-impression après vente
+            <select id="autoPrint">
+              <option value="true">Oui</option>
+              <option value="false">Non</option>
+            </select>
+          </label>
+          <label>Serveurs (séparés par virgule)
+            <input id="servers" required type="text" />
+          </label>
+          <button class="primary" type="submit">Sauvegarder paramètres</button>
+        </form>
+      </article>
+    </section>
+
+    <section class="tab-panel" data-panel="rapport">
+      <div class="grid two-col">
+        <article class="card">
+          <h2>Résumé du jour</h2>
+          <div class="stats">
+            <div><span>Tickets</span><strong id="ticketsCount">0</strong></div>
+            <div><span>Chiffre d'affaires</span><strong id="revenue">0,00 €</strong></div>
+            <div><span>Articles vendus</span><strong id="itemsSold">0</strong></div>
+            <div><span>Serveur top</span><strong id="topServer">-</strong></div>
+          </div>
+          <button id="printDayReportBtn" class="secondary">Imprimer rapport jour</button>
+          <ul id="historyList" class="list"></ul>
+        </article>
+        <article class="card">
+          <h2>Archives de fin de journée</h2>
+          <ul id="closeHistoryList" class="list"></ul>
+        </article>
       </div>
-      <h3>Historique</h3>
-      <ul id="historyList" class="list"></ul>
     </section>
   </main>
 
-  <template id="productItemTemplate">
-    <li class="item-row">
-      <div>
-        <strong class="p-name"></strong>
-        <span class="p-price"></span>
+  <dialog id="printDialog">
+    <article>
+      <h3 id="printTitle"></h3>
+      <pre id="printContent"></pre>
+      <div class="dialog-actions">
+        <button id="nativePrintBtn" class="primary">Imprimer</button>
+        <button id="closePrintDialogBtn" class="secondary">Fermer</button>
       </div>
-      <div class="actions">
-        <button class="small add">Ajouter au ticket</button>
-        <button class="small danger remove">Supprimer</button>
-      </div>
-    </li>
-  </template>
-
-  <template id="cartItemTemplate">
-    <li class="item-row">
-      <div>
-        <strong class="c-name"></strong>
-        <span class="c-price"></span>
-      </div>
-      <button class="small danger c-remove">Retirer</button>
-    </li>
-  </template>
+    </article>
+  </dialog>
 
   <script src="app.js"></script>
 </body>
