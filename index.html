@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Café Caisse - Gestion</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>☕ Gestion Caisse Café</h1>
+      <p>Application simple pour ventes, tickets et suivi journalier.</p>
+    </div>
+    <button id="resetDayBtn" class="danger">Réinitialiser la journée</button>
+  </header>
+
+  <main class="layout">
+    <section class="panel">
+      <h2>Produits</h2>
+      <form id="productForm" class="form-grid">
+        <input id="productName" type="text" placeholder="Nom du produit" required />
+        <input id="productPrice" type="number" min="0" step="0.01" placeholder="Prix (€)" required />
+        <button type="submit">Ajouter produit</button>
+      </form>
+      <ul id="productList" class="list"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>Commande en cours</h2>
+      <p class="hint">Cliquez sur <strong>Ajouter au ticket</strong> pour vendre un article.</p>
+      <ul id="cartList" class="list"></ul>
+      <div class="total-row">
+        <span>Total ticket :</span>
+        <strong id="cartTotal">0.00 €</strong>
+      </div>
+      <button id="checkoutBtn" class="primary">Valider la vente</button>
+    </section>
+
+    <section class="panel">
+      <h2>Résumé du jour</h2>
+      <div class="stats">
+        <div class="stat-box">
+          <span>Ventes</span>
+          <strong id="salesCount">0</strong>
+        </div>
+        <div class="stat-box">
+          <span>Chiffre d'affaires</span>
+          <strong id="dailyRevenue">0.00 €</strong>
+        </div>
+      </div>
+      <h3>Historique</h3>
+      <ul id="historyList" class="list"></ul>
+    </section>
+  </main>
+
+  <template id="productItemTemplate">
+    <li class="item-row">
+      <div>
+        <strong class="p-name"></strong>
+        <span class="p-price"></span>
+      </div>
+      <div class="actions">
+        <button class="small add">Ajouter au ticket</button>
+        <button class="small danger remove">Supprimer</button>
+      </div>
+    </li>
+  </template>
+
+  <template id="cartItemTemplate">
+    <li class="item-row">
+      <div>
+        <strong class="c-name"></strong>
+        <span class="c-price"></span>
+      </div>
+      <button class="small danger c-remove">Retirer</button>
+    </li>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
